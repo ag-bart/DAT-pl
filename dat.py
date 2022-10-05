@@ -12,7 +12,7 @@ import pandas as pd
 class Model:
     """Create model to compute DAT"""
 
-    def __init__(self, model="glove_300_3_polish.txt", dictionary="posortowane4.txt", pattern="^[a-ząćęłńóśźż][a-ząćęłńóśźż-]*[a-ząćęłńóśźż]$"):
+    def __init__(self, model="glove_100_3_polish.txt", dictionary="posortowane4.txt", pattern="^[a-ząćęłńóśźż][a-ząćęłńóśźż-]*[a-ząćęłńóśźż]$"):
         """Join model and words matching pattern in dictionary"""
 
         # Keep unique words matching pattern from file
