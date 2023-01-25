@@ -210,3 +210,4 @@ poetry.toml
 
 # ruff
 .ruff_cache/
+glove_100_3_polish.txt
