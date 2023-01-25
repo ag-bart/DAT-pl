@@ -1,6 +1,11 @@
 """Compute score for Divergent Association Task,
 a quick and simple measure of creativity
-(Copyright 2021 Jay Olson; see LICENSE)"""
+(Copyright 2021 Jay Olson; see LICENSE)
+
+Modifications and polish adaptation
+Copyright 2022 Agnieszka Bartkowska
+"""
+
 
 import re
 import itertools
@@ -98,8 +103,6 @@ class Model:
             dist = self.distance(word1, word2)
             distances.append(dist)
             pairs.append((word1, word2, dist))
-        
-
 
         if all_words == 1: #pass 1 to print out all distances, leave out to get DAT score only
             return pairs
