@@ -17,7 +17,7 @@ import pandas as pd
 class Model:
     """Create model to compute DAT"""
 
-    def __init__(self, model="glove_100_3_polish.txt", dictionary="posortowane4.txt", pattern="^[a-ząćęłńóśźż][a-ząćęłńóśźż-]*[a-ząćęłńóśźż]$"):
+    def __init__(self, model="glove_100_3_polish.txt", dictionary="words.txt", pattern="^[a-ząćęłńóśźż][a-ząćęłńóśźż-]*[a-ząćęłńóśźż]$"):
         """Join model and words matching pattern in dictionary"""
 
         # Keep unique words matching pattern from file
@@ -108,6 +108,36 @@ class Model:
             return pairs
         else:
             return (sum(distances) / len(distances)) * 100 # Compute the DAT score (average semantic distance multiplied by 100)
+
+    def full_dat(self, words, all_words=0, minimum=7):
+        """Compute DAT score for all given words"""
+        uniques = []
+        for word in words:
+            valid = self.validate(word, 0)
+            if valid and valid not in uniques:
+                uniques.append(valid)
+
+
+        # Keep subset of words
+        if len(uniques) >= minimum:
+            subset = uniques
+        else:
+            return None # Not enough valid words
+
+        # Compute distances between each pair of words
+        distances = []
+        pairs = []
+        for word1, word2 in itertools.combinations(subset, 2):
+            dist = self.distance(word1, word2)
+            distances.append(dist)
+            pairs.append((word1, word2, dist))
+
+        if all_words == 1: #pass 1 to print out all distances, leave out to get DAT score only
+            return pairs
+        else:
+            return (sum(distances) / len(distances)) * 100 # Compute the DAT score (average semantic distance  multiplied by 100)
+
+
 
     def invalid_words(self, words):
         """Print words not found in model"""
