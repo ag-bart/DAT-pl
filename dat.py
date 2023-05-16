@@ -40,7 +40,7 @@ class Model:
         self.vectors = vectors
 
 
-    def validate(self, word, invalid=0):
+    def validate(self, word, invalid=False):
         """Clean up word and find best candidate to use"""
 
         # Strip unwanted characters
@@ -61,11 +61,11 @@ class Model:
             if "-" in clean:
                 candidates.append(re.sub(r"-+", "", clean))
         for cand in candidates:
-            if invalid == 0: # pass 0 to return valid words, 1 to return invalid words
+            if not invalid: # False(default) to return valid words, True to return invalid words
                 if cand in self.vectors:
                     return cand # Return first word that is in model
                 return None  # Could not find valid word
-            if invalid == 1:
+            else:
                 if cand in self.vectors:
                     continue
                 return cand
@@ -80,12 +80,12 @@ class Model:
         return scipy.spatial.distance.cosine(self.vectors.get(word1), self.vectors.get(word2))
 
 
-    def dat(self, words, all_words=0, minimum=7):
+    def dat(self, words, all_words=False, minimum=7):
         """Compute DAT score"""
         # Keep only valid unique words
         uniques = []
         for word in words:
-            valid = self.validate(word, 0)
+            valid = self.validate(word)
             if valid and valid not in uniques:
                 uniques.append(valid)
 
@@ -104,16 +104,16 @@ class Model:
             distances.append(dist)
             pairs.append((word1, word2, dist))
 
-        if all_words == 1: #pass 1 to print out all distances, leave out to get DAT score only
-            return pairs
-        else:
+        if all_words: #True to print out all distances, False (default) to get DAT score only
+            return distances
+        if not all_words:
             return (sum(distances) / len(distances)) * 100 # Compute the DAT score (average semantic distance multiplied by 100)
 
-    def full_dat(self, words, all_words=0, minimum=7):
+    def full_dat(self, words, all_words=False, minimum=7):
         """Compute DAT score for all given words"""
         uniques = []
         for word in words:
-            valid = self.validate(word, 0)
+            valid = self.validate(word)
             if valid and valid not in uniques:
                 uniques.append(valid)
 
@@ -132,8 +132,8 @@ class Model:
             distances.append(dist)
             pairs.append((word1, word2, dist))
 
-        if all_words == 1: #pass 1 to print out all distances, leave out to get DAT score only
-            return pairs
+        if all_words: 
+            return distances
         else:
             return (sum(distances) / len(distances)) * 100 # Compute the DAT score (average semantic distance  multiplied by 100)
 
@@ -143,8 +143,11 @@ class Model:
         """Print words not found in model"""
         invalid_list = []
         for word in words:
-            invalid_word = self.validate(word, 1)
+            invalid_word = self.validate(word, invalid=True)
             if invalid_word is not None:
                 invalid_list.append(invalid_word)
 
         return invalid_list
+
+    
+
