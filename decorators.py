@@ -8,7 +8,7 @@ def dict_decorator(method):
     def impl(*method_args, **method_kwargs):
         method_output = method(*method_args, **method_kwargs)
         # omit list brackets from output
-        print("\n".join(f'{k} : {str(v)[1:-1]}' for k, v in method_output.items()))
+        return "\n".join(f'{k} : {str(v)[1:-1]}' for k, v in method_output.items())
     return impl
 
 

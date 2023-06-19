@@ -13,7 +13,7 @@ class DatComputer(Model):
         self.dat_distances = []
 
     @dict_decorator
-    def inv_words(self) -> dict[int, list[str]]:
+    def inv_words(self):
         """Return a dictionary of words not found in model.
 
         Returns
@@ -26,8 +26,7 @@ class DatComputer(Model):
 
         inv_dict = {}
         for answer in self.data:
-            invalid_list = [word for words in answer
-                            if (word := self.get_invalid(words)) is not None]
+            invalid_list = [word for words in answer if (word := self.get_invalid(words)) is not None]
             if len(invalid_list) > 0:
                 inv_dict[(self.data.index(answer) + 1)] = invalid_list
         return inv_dict
