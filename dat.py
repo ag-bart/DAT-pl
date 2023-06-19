@@ -50,7 +50,7 @@ class Model:
         # Strip unwanted characters
         clean = re.sub(r"[^a-ząćęłńóśźżĄĆĘŁŃÓŚŹŻA-Z- ]+", "", word).strip().lower()
         if len(clean) <= 1:
-            return None  # Word too short
+            return " "  # Word too short
 
         # Generate candidates for possible compound words
         # "valid" -> ["valid"]
