@@ -64,7 +64,7 @@ class DatComputer:
 
         date = time.strftime("%Y-%b-%d__%H_%M_%S", time.localtime())
         file_name = f'dat_distances{date}.csv'
-        output_path = os.path.join('..', 'results', file_name)
+        output_path = os.path.join('results', file_name)
 
         if not self.dat_distances:
             self.compute_dat()
