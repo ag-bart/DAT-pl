@@ -7,6 +7,7 @@ from src.decorators import dict_decorator, round_output
 
 class DatComputer:
 
+    # TODO: typing
     def __init__(self, distance_analyzer, word_cleaner, data):
         self.analyzer = distance_analyzer
         self.cleaner = word_cleaner
@@ -34,6 +35,7 @@ class DatComputer:
                             (word := self.cleaner.get_invalid(words)) is not None
                             ]
             if len(invalid_list) > 0:
+                # TODO: move index increase to decorator function
                 invalid_dict[(self.data.index(answer) + 1)] = invalid_list
 
         self.invalid_dict = invalid_dict

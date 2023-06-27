@@ -12,6 +12,7 @@ if __name__ == '__main__':
     database_path = os.path.join('..', 'data', 'vectors.db')
     file_path = os.path.join('..', 'data', filename)
 
+    # TODO: add option to read .csv as well
     df_upload = pd.read_excel(file_path, header=None, dtype=str)
     df_upload = df_upload.fillna(value=' ')
     dat_data = df_upload.values.tolist()
