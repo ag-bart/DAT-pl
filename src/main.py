@@ -9,6 +9,7 @@ from src.dat_computer import DatComputer
 if __name__ == '__main__':
 
     filename = 'dat-data.xlsx'
+    # TODO: run create_database.py if vectors.db not found
     database_path = os.path.join('..', 'data', 'vectors.db')
     file_path = os.path.join('..', 'data', filename)
 
