@@ -1,5 +1,6 @@
 import sqlite3
 import numpy as np
+from typing import List, Optional
 
 
 class DatabaseManager:
@@ -16,7 +17,7 @@ class DatabaseManager:
             self.connection.close()
             self.connection = None
 
-    def get_words(self):
+    def get_words(self) -> List[str]:
 
         if not self.connection:
             self.connect()
@@ -26,7 +27,7 @@ class DatabaseManager:
         words = [row[0] for row in cursor.fetchall()]
         return words
 
-    def get_word_vector(self, word):
+    def get_word_vector(self, word: str) -> Optional[np.ndarray]:
         # Query the database for a specific word
         if not self.connection:
             self.connect()

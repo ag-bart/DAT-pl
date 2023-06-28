@@ -1,10 +1,4 @@
-"""Compute score for Divergent Association Task,
-a quick and simple measure of creativity
-(Copyright 2021 Jay Olson; see LICENSE)
 
-Modifications and polish adaptation
-Copyright 2022 Agnieszka Bartkowska
-"""
 import scipy.spatial.distance
 import itertools
 
@@ -15,7 +9,7 @@ class DistanceAnalyzer:
         self.db = database_manager
         self.cleaner = word_cleaner
 
-    def distance(self, word1, word2):
+    def distance(self, word1: str, word2: str):
         """Compute cosine distance (0 to 2) between two words"""
 
         return scipy.spatial.distance.cosine(self.db.get_word_vector(word1),
@@ -27,7 +21,7 @@ class DistanceAnalyzer:
         # Keep only valid unique words
         uniques = []
         for word in words:
-            valid = self.cleaner.validate(word)
+            valid, _ = self.cleaner.validate(word)
             if valid and valid not in uniques:
                 uniques.append(valid)
 

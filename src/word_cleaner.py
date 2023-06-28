@@ -1,49 +1,29 @@
 import re
+from typing import List, Tuple, Optional
 
 
 class WordCleaner:
-    # TODO: typing
     def __init__(self, database_manager):
         self.db = database_manager
-        self.words = None
+        self.words = []
 
     @staticmethod
-    def clean(word):
-        """Clean up word"""
-
-        # Strip unwanted characters
-        clean = re.sub(r"[^a-ząćęłńóśźżĄĆĘŁŃÓŚŹŻA-Z- ]+", "",
-                       word).strip().lower()
-        if len(clean) <= 1:
-            return " "  # Word too short
-
-        # TODO: possibly not needed, could return only single words
-        # Generate candidates for possible compound words
-        candidates = []
-        if " " in clean:
-            candidates.append(re.sub(r" +", "-", clean))
-            candidates.append(re.sub(r" +", "", clean))
-        else:
-            candidates.append(clean)
-            if "-" in clean:
-                candidates.append(re.sub(r"-+", "", clean))
-        return candidates
+    def clean(word: str):
+        cleaned = re.sub(r"[^a-ząćęłńóśźżĄĆĘŁŃÓŚŹŻA-Z- ]+", "", word.lower())
+        cleaned = cleaned.strip()
+        return cleaned if len(cleaned) > 1 else " "
 
     def set_valid_words(self):
-        valid_words = self.db.get_words()
+        valid_words: List[str] = self.db.get_words()
         self.words = valid_words
 
-    # TODO: combine into one method
-    def validate(self, word):
+    def validate(self, word: str) -> Tuple[Optional[str], Optional[str]]:
         if not self.words:
             self.set_valid_words()
 
-        for cleaned in self.clean(word):
-            return cleaned if cleaned in self.words else None
+        cleaned = self.clean(word)
 
-    def get_invalid(self, word):
-        if not self.words:
-            self.set_valid_words()
-
-        for cleaned in self.clean(word):
-            return cleaned if cleaned not in self.words else None
+        if cleaned in self.words:
+            return cleaned, None  # valid word
+        else:
+            return None, cleaned  # invalid word

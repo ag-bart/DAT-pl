@@ -2,6 +2,7 @@ import os
 import time
 import itertools
 import pandas as pd
+from typing import Dict
 from src.decorators import format_dict_output, round_output
 
 
@@ -13,23 +14,19 @@ class DatComputer:
         self.cleaner = word_cleaner
         self.data = data
 
-        self.invalid_dict = None
+        self.invalid_dict: Dict[str] = {}
         self.dat_distances = None
         self.dat_values = None
 
     @format_dict_output
     def invalid_words(self):
+        invalid_dict = {
+            i: [self.cleaner.validate(word)[1] for word in answer if
+                self.cleaner.validate(word)[1] is not None]
+            for i, answer in enumerate(self.data)
+        }
 
-        invalid_dict = {}
-        for answer in self.data:
-            invalid_list = [
-                            word for words in answer if
-                            (word := self.cleaner.get_invalid(words)) is not None
-                            ]
-            if len(invalid_list) > 0:
-                invalid_dict[self.data.index(answer)] = invalid_list
-
-        self.invalid_dict = invalid_dict
+        self.invalid_dict = {k: v for k, v in invalid_dict.items() if v}
         return self.invalid_dict
 
     @round_output

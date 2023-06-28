@@ -4,15 +4,15 @@ from typing import Set, Dict
 
 
 class WordValidator:
-    def __init__(self, dictionary: str, model: str):
+    def __init__(self, lang_dictionary: str, model: str):
 
-        self.dictionary = dictionary
+        self.lang_dictionary = lang_dictionary
         self.model = model
         self.words: Set[str] = set()
         self.vectors: Dict[str, np.ndarray] = {}
 
     def load_dictionary(self):
-        with open(self.dictionary, "r", encoding="utf-8") as f:
+        with open(self.lang_dictionary, "r", encoding="utf-8") as f:
             self.words = {word.strip() for word in f}
 
     def process_model(self):
@@ -28,7 +28,7 @@ class WordValidator:
                     self.vectors[word] = vector
 
 
-validator = WordValidator(dictionary='words.txt',
+validator = WordValidator(lang_dictionary='words.txt',
                           model='glove_100_3_polish.txt')
 validator.process_model()
 
