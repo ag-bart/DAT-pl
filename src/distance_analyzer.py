@@ -16,7 +16,6 @@ class DistanceAnalyzer:
                                              self.db.get_word_vector(word2))
 
     def dat(self, words, minimum=7):
-        """Compute DAT score"""
 
         # Keep only valid unique words
         uniques = []
