@@ -52,6 +52,7 @@ class DatComputer:
 
         date = time.strftime("%Y-%b-%d__%H_%M_%S", time.localtime())
         file_name = f'dat_distances{date}.csv'
+        # TODO: check if path exists
         output_path = os.path.join('results', file_name)
 
         if not self.dat_distances:
