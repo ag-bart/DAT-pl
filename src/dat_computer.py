@@ -2,7 +2,7 @@ import os
 import time
 import itertools
 import pandas as pd
-from src.decorators import dict_decorator, round_output
+from src.decorators import format_dict_output, round_output
 
 
 class DatComputer:
@@ -17,17 +17,9 @@ class DatComputer:
         self.dat_distances = None
         self.dat_values = None
 
-    @dict_decorator
+    @format_dict_output
     def invalid_words(self):
-        """Return a dictionary of words not found in model.
 
-        Returns
-        -------
-        key : int
-            index of participant's answer increased by 1 to reflect id in file
-        value : list[str]
-            list of incorrect words
-        """
         invalid_dict = {}
         for answer in self.data:
             invalid_list = [
@@ -35,8 +27,7 @@ class DatComputer:
                             (word := self.cleaner.get_invalid(words)) is not None
                             ]
             if len(invalid_list) > 0:
-                # TODO: move index increase to decorator function
-                invalid_dict[(self.data.index(answer) + 1)] = invalid_list
+                invalid_dict[self.data.index(answer)] = invalid_list
 
         self.invalid_dict = invalid_dict
         return self.invalid_dict
