@@ -54,6 +54,9 @@ class DatComputer:
         file_name = f'dat_distances{date}.csv'
         output_path = os.path.join('results', file_name)
 
+        if not os.path.exists(output_path):
+            os.makedirs('results', exist_ok=True)
+
         if not self.dat_distances:
             self.compute_dat()
 
