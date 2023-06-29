@@ -44,18 +44,17 @@ class DatabaseManager:
 
 
 def read_data(path_to_file):
-
     if path_to_file.endswith('.xlsx'):
         df_upload = pd.read_excel(path_to_file, header=None, dtype=str)
-        df_upload = df_upload.fillna(value=' ')
-        dat_data = df_upload.values.tolist()
 
     elif path_to_file.endswith('.csv'):
         df_upload = pd.read_csv(path_to_file, header=None, dtype=str, sep=';')
-        df_upload = df_upload.fillna(value=' ')
-        dat_data = df_upload.values.tolist()
 
     else:
-        dat_data = None
+        raise ValueError(
+            'Unsupported file type. Only XLSX and CSV files are supported.')
+
+    df_upload = df_upload.fillna(value=' ')
+    dat_data = df_upload.values.tolist()
 
     return dat_data
