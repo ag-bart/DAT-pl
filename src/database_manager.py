@@ -1,5 +1,6 @@
 import sqlite3
 import numpy as np
+import pandas as pd
 from typing import List, Optional
 
 
@@ -40,3 +41,21 @@ class DatabaseManager:
             return vector_data
 
         return None
+
+
+def read_data(path_to_file):
+
+    if path_to_file.endswith('.xlsx'):
+        df_upload = pd.read_excel(path_to_file, header=None, dtype=str)
+        df_upload = df_upload.fillna(value=' ')
+        dat_data = df_upload.values.tolist()
+
+    elif path_to_file.endswith('.csv'):
+        df_upload = pd.read_csv(path_to_file, header=None, dtype=str, sep=';')
+        df_upload = df_upload.fillna(value=' ')
+        dat_data = df_upload.values.tolist()
+
+    else:
+        dat_data = None
+
+    return dat_data
