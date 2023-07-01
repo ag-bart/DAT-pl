@@ -30,7 +30,7 @@ class DatabaseManager:
         return words
 
     def get_word_vector(self, word: str) -> Optional[np.ndarray]:
-        # Query the database for a specific word
+        """Retrieve word vector from the database for a given word."""
         if not self.connection:
             self.connect()
         cursor = self.connection.cursor()

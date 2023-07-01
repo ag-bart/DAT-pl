@@ -4,6 +4,13 @@ from typing import List, Tuple, Optional
 
 class WordCleaner:
     def __init__(self, database_manager):
+        """
+        Initialize the WordCleaner instance.
+
+        Parameters:
+            database_manager (DatabaseManager):
+                An instance of the DatabaseManager class.
+        """
         self.db = database_manager
         self.words = []
 
@@ -16,10 +23,12 @@ class WordCleaner:
         return cleaned if len(cleaned) > 1 else ' '
 
     def set_valid_words(self):
+        """Retrieve and save the list of words from the vector database"""
         valid_words: List[str] = self.db.get_words()
         self.words = valid_words
 
     def validate(self, word: str) -> Tuple[Optional[str], Optional[str]]:
+
         if not self.words:
             self.set_valid_words()
 
