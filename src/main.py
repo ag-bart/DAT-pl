@@ -1,6 +1,7 @@
 import os
+from data.create_database import read_data
 from src.distance_analyzer import DistanceAnalyzer
-from src.database_manager import DatabaseManager, read_data
+from src.database_manager import DatabaseManager
 from src.word_cleaner import WordCleaner
 from src.dat_computer import DatComputer
 

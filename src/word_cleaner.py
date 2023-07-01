@@ -9,9 +9,11 @@ class WordCleaner:
 
     @staticmethod
     def clean(word: str):
-        cleaned = re.sub(r"[^a-ząćęłńóśźżĄĆĘŁŃÓŚŹŻA-Z- ]+", "", word.lower())
+        if not isinstance(word, str):
+            raise ValueError("Input word must be a string.")
+        cleaned = re.sub(r'[^a-ząćęłńóśźżĄĆĘŁŃÓŚŹŻA-Z- ]+', '', word.lower())
         cleaned = cleaned.strip()
-        return cleaned if len(cleaned) > 1 else " "
+        return cleaned if len(cleaned) > 1 else ' '
 
     def set_valid_words(self):
         valid_words: List[str] = self.db.get_words()

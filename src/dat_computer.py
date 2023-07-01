@@ -7,7 +7,6 @@ from src.decorators import format_dict_output, round_output
 
 
 class DatComputer:
-    # TODO: typing
     def __init__(self, distance_analyzer, word_cleaner, data):
         self.analyzer = distance_analyzer
         self.cleaner = word_cleaner
@@ -48,7 +47,7 @@ class DatComputer:
         column_names = [f'{c1}-{c2}'
                         for c1, c2 in itertools.combinations(columns, 2)]
 
-        date = time.strftime("%Y-%b-%d__%H_%M_%S", time.localtime())
+        date = time.strftime('%Y-%b-%d__%H_%M_%S', time.localtime())
         file_name = f'dat_distances{date}.csv'
         output_path = os.path.join('results', file_name)
 

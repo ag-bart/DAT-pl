@@ -1,7 +1,6 @@
 import sqlite3
 from typing import List, Optional
 import numpy as np
-import pandas as pd
 
 
 class DatabaseManager:
@@ -10,7 +9,11 @@ class DatabaseManager:
         self.connection = None
 
     def connect(self):
-        self.connection = sqlite3.connect(self.db_path)
+        try:
+            self.connection = sqlite3.connect(self.db_path)
+        except sqlite3.Error as exc:
+            raise ConnectionError(
+                f"Error connecting to the database: {str(exc)}") from exc
 
     def disconnect(self):
         if self.connection:
@@ -39,20 +42,3 @@ class DatabaseManager:
             return vector_data
 
         return None
-
-
-def read_data(path_to_file):
-    if path_to_file.endswith('.xlsx'):
-        df_upload = pd.read_excel(path_to_file, header=None, dtype=str)
-
-    elif path_to_file.endswith('.csv'):
-        df_upload = pd.read_csv(path_to_file, header=None, dtype=str, sep=';')
-
-    else:
-        raise ValueError(
-            'Unsupported file type. Only XLSX and CSV files are supported.')
-
-    df_upload = df_upload.fillna(value=' ')
-    dat_data = df_upload.values.tolist()
-
-    return dat_data
