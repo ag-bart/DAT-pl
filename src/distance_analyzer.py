@@ -1,22 +1,18 @@
-
-import scipy.spatial.distance
 import itertools
+import scipy.spatial.distance
 
 
 class DistanceAnalyzer:
-
     def __init__(self, database_manager, word_cleaner):
         self.db = database_manager
         self.cleaner = word_cleaner
 
     def distance(self, word1: str, word2: str):
         """Compute cosine distance (0 to 2) between two words"""
-
         return scipy.spatial.distance.cosine(self.db.get_word_vector(word1),
                                              self.db.get_word_vector(word2))
 
     def dat(self, words, minimum=7):
-
         # Keep only valid unique words
         uniques = []
         for word in words:
@@ -35,5 +31,4 @@ class DistanceAnalyzer:
         for word1, word2 in itertools.combinations(subset, 2):
             dist = self.distance(word1, word2)
             distances.append(dist)
-
         return distances

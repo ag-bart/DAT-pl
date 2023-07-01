@@ -1,11 +1,10 @@
 import sqlite3
+from typing import List, Optional
 import numpy as np
 import pandas as pd
-from typing import List, Optional
 
 
 class DatabaseManager:
-
     def __init__(self, db_path):
         self.db_path = db_path
         self.connection = None
@@ -19,7 +18,6 @@ class DatabaseManager:
             self.connection = None
 
     def get_words(self) -> List[str]:
-
         if not self.connection:
             self.connect()
 

@@ -25,5 +25,4 @@ class WordCleaner:
 
         if cleaned in self.words:
             return cleaned, None  # valid word
-        else:
-            return None, cleaned  # invalid word
+        return None, cleaned  # invalid word

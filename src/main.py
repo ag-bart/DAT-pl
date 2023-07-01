@@ -12,7 +12,6 @@ if __name__ == '__main__':
     file_path = os.path.join('..', 'data', filename)
 
     dat_data = read_data(file_path)
-    
     db_manager = DatabaseManager(database_path)
     data_cleaner = WordCleaner(db_manager)
     data_analyzer = DistanceAnalyzer(db_manager, data_cleaner)

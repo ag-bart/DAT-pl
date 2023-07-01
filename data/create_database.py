@@ -1,6 +1,6 @@
 import sqlite3
-import numpy as np
 from typing import Set, Dict
+import numpy as np
 
 
 class WordValidator:
@@ -19,7 +19,7 @@ class WordValidator:
         if not self.words:
             self.load_dictionary()
 
-        with open(self.model, "r", encoding="utf8") as f:
+        with open(self.model, "r", encoding="utf-8") as f:
             for line in f:
                 tokens = line.split(" ")
                 word = tokens[0]
