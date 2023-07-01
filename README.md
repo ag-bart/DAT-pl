@@ -1,4 +1,4 @@
-# Divergent Association Task - Polish Adaptation
+# Divergent Association Task - Polish adaptation
 
 Original code by [Jay Olson](https://github.com/jayolson/divergent-association-task)
 
