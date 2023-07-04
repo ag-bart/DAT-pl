@@ -1,14 +1,13 @@
-import os
 import sqlite3
+import os
 from typing import Set, Dict
-import pandas as pd
 import numpy as np
 
 
-class WordValidator:
+class ModelProcessor:
     def __init__(self, lang_dictionary: str, model: str):
         """
-        Initialize the WordValidator instance.
+        Initialize the ModelProcessor instance.
 
         Parameters:
             lang_dictionary: path to file containing the dictionary.
@@ -60,7 +59,7 @@ class WordValidator:
                 f'Error processing word vectors model: 'f'{exc}') from exc
 
 
-def create_vectors_database(database_path: str = 'vectors.db',
+def create_vectors_database(database_path: str,
                             dict_path: str = 'words.txt',
                             model_path: str = 'glove_100_3_polish.txt'):
 
@@ -72,8 +71,8 @@ def create_vectors_database(database_path: str = 'vectors.db',
             cursor.execute('''CREATE TABLE
                               vectors (word TEXT PRIMARY KEY, vector BLOB)''')
 
-            validator = WordValidator(lang_dictionary=dict_path,
-                                      model=model_path)
+            validator = ModelProcessor(lang_dictionary=dict_path,
+                                       model=model_path)
             validator.process_model()
 
             for valid_word, word_vector in validator.vectors.items():
@@ -92,29 +91,8 @@ def create_vectors_database(database_path: str = 'vectors.db',
     else:
         print(f'Database already exists at: {database_path}')
 
-
-def read_data(path_to_file):
-    try:
-        if path_to_file.endswith('.xlsx'):
-            df_upload = pd.read_excel(path_to_file, header=None, dtype=str)
-
-        elif path_to_file.endswith('.csv'):
-            df_upload = pd.read_csv(path_to_file, header=None, dtype=str,
-                                    sep=';')
-        else:
-            raise ValueError(
-                'Unsupported file type. Only XLSX and CSV files are supported.'
-            )
-
-    except FileNotFoundError as exc:
-        raise FileNotFoundError(f"File '{path_to_file}' not found.") from exc
-
-    except pd.errors.ParserError as exc:
-        raise ValueError(
-            f"Error while parsing the file "
-            f"'{path_to_file}': {str(exc)}") from exc
-
-    df_upload = df_upload.fillna(value=' ')
-    dat_data = df_upload.values.tolist()
-
-    return dat_data
+if __name__ == "__main__":
+    # Example usage:
+    create_vectors_database(database_path='datpl/database/vectors.db',
+                            dict_path='words.txt',
+                            model_path='glove_100_3_polish.txt')
