@@ -1,14 +1,12 @@
 import os
 import time
 import itertools
-import pandas as pd
 from typing import Dict
+import pandas as pd
 from src.decorators import format_dict_output, round_output
 
 
 class DatComputer:
-
-    # TODO: typing
     def __init__(self, distance_analyzer, word_cleaner, data):
         self.analyzer = distance_analyzer
         self.cleaner = word_cleaner
@@ -32,7 +30,6 @@ class DatComputer:
     @round_output
     def compute_dat(self):
         """return mean distances multiplied by 100 for each participant"""
-
         dat_values = [((sum(distances) / len(distances)) * 100)
                       if len(distances) != 0 else None
                       for distances in self.distances_by_pairs()]
@@ -50,10 +47,13 @@ class DatComputer:
         column_names = [f'{c1}-{c2}'
                         for c1, c2 in itertools.combinations(columns, 2)]
 
-        date = time.strftime("%Y-%b-%d__%H_%M_%S", time.localtime())
+        date = time.strftime('%Y-%b-%d__%H_%M_%S', time.localtime())
         file_name = f'dat_distances{date}.csv'
         # TODO: check if path exists
         output_path = os.path.join('results', file_name)
+
+        if not os.path.exists(output_path):
+            os.makedirs('results', exist_ok=True)
 
         if not self.dat_distances:
             self.compute_dat()
