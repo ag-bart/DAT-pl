@@ -19,6 +19,13 @@ def format_dict_output(method):
 
 
 def round_output(method):
+    """
+    Rounds the output to two decimal places and prints it on newline.
+
+    Parameters:
+        method (callable): The method to be decorated.
+            Method's output should be a list of floating-point numbers.
+    """
     @wraps(method)
     def wrapper(*method_args, **method_kwargs):
         method_output = method(*method_args, **method_kwargs)
