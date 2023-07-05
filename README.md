@@ -6,7 +6,6 @@ Read the authors' [manuscript](https://www.pnas.org/content/118/25/e2022340118) 
 ## Credits
 
 
-Original code by [Jay Olson](https://github.com/jayolson/divergent-association-task)
 
 
 Global Vectors for Word Representation by:
