@@ -21,8 +21,22 @@ class DatComputer:
         """
         self.db = database_manager
         self.data = processed_data
+        self._minimum_words = 7
+
         self.dat_distances = None
         self.dat_scores = None
+
+    @property
+    def minimum_words(self):
+        return self._minimum_words
+
+    @minimum_words.setter
+    def minimum_words(self, value):
+        if not isinstance(value, int):
+            raise ValueError('minimum value must be of type int')
+        if value < 0:
+            raise ValueError('minimum value must be greater than 0')
+        self._minimum_words = value
 
     def distance(self, word1: str, word2: str):
         """
@@ -35,7 +49,7 @@ class DatComputer:
         return cosine(self.db.get_word_vector(word1),
                       self.db.get_word_vector(word2))
 
-    def dat(self, words: List[str], minimum: int = 7) -> List[float]:
+    def dat(self, words: List[str]) -> List[float]:
         """
         Compute pairwise distances for a list of words.
         Distances are computed for the first n valid words found in the list,
@@ -44,16 +58,14 @@ class DatComputer:
         Parameters:
             words (List[str]):
                 The list of words to compute distances for.
-            minimum (int):
-                The minimum number of valid words needed to compute distances.
 
         Returns:
             List[float]: A list of distances between valid word pairs.
                 Empty if the wordlist contained fewer valid words than minimum.
         """
 
-        if len(words) >= minimum:
-            subset = words[:minimum]
+        if len(words) >= self.minimum_words:
+            subset = words[:self.minimum_words]
         else:
             return []  # Not enough valid words
 
@@ -83,7 +95,8 @@ class DatComputer:
 
     def save_results(self):
         """Save computed distances to a CSV file in the 'results' folder."""
-        columns = ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7']
+        columns = ['W'+str(n) for n in range(1, self.minimum_words+1)]
+
         column_names = [f'{c1}-{c2}'
                         for c1, c2 in combinations(columns, 2)]
 
