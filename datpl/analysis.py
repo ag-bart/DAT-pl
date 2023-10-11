@@ -17,12 +17,12 @@ class DatComputer:
                 An instance of DatabaseManager for database interaction.
             processed_data (List[List[str]]):
                 The data to compute distances for.
-                    Processing is implemented in the DataProcessor class.
+                Processing is implemented in the DataProcessor class.
         """
         self.db = database_manager
         self.data = processed_data
         self.dat_distances = None
-        self.dat_values = None
+        self.dat_scores = None
 
     def distance(self, word1: str, word2: str):
         """
@@ -61,27 +61,27 @@ class DatComputer:
                      for word1, word2 in combinations(subset, 2)]
         return distances
 
-    @round_output
-    def compute_dat(self):
-        """return mean distances multiplied by 100 for each participant"""
-        self.dat_values = [((sum(distances) / len(distances)) * 100)
-                           if len(distances) != 0 else None
-                           for distances in self.distances_by_pairs()]
-
-        return self.dat_values
-
-    def distances_by_pairs(self):
+    def dataset_distances(self):
         """
         Compute pairwise distances for all answers in the processed data.
 
         Returns:
             List[List[float]]:
-                A list of lists with distances for each answer's word pairs.
+                Distances computed for each row in the dataset.
         """
         self.dat_distances = [self.dat(answer) for answer in self.data]
         return self.dat_distances
 
-    def save_distances(self):
+    @round_output
+    def dataset_compute_dat(self):
+        """return mean distances multiplied by 100 for each participant"""
+        self.dat_scores = [((sum(distances) / len(distances)) * 100)
+                           if len(distances) > 0 else None
+                           for distances in self.dataset_distances()]
+
+        return self.dat_scores
+
+    def save_results(self):
         """Save computed distances to a CSV file in the 'results' folder."""
         columns = ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7']
         column_names = [f'{c1}-{c2}'
@@ -95,9 +95,9 @@ class DatComputer:
             os.makedirs('results', exist_ok=True)
 
         if not self.dat_distances:
-            self.compute_dat()
+            self.dataset_compute_dat()
 
         df = pd.DataFrame(self.dat_distances, columns=column_names)
-        df['DAT'] = self.dat_values
+        df['DAT'] = self.dat_scores
         df.to_csv(output_path)
         print('csv file saved in /results.')
