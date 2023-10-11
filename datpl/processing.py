@@ -3,7 +3,6 @@ import re
 from typing import Tuple, Optional
 from collections import OrderedDict
 import numpy as np
-from datpl.reader_interface import DataReader
 
 
 class DatabaseManager:
@@ -42,6 +41,8 @@ class DatabaseManager:
         cursor = self.connection.cursor()
         cursor.execute('SELECT word FROM vectors')
         words = [row[0] for row in cursor.fetchall()]
+
+        self.disconnect()
         return words
 
     def get_word_vector(self, word: str) -> Optional[np.ndarray]:
@@ -70,39 +71,14 @@ class DatabaseManager:
 
 
 class DataProcessor:
-    def __init__(self,
-                 db_manager: DatabaseManager,
-                 data_reader: DataReader,
-                 filepath: str
-                 ):
+    def __init__(self, words):
         """
         Initialize the DataProcessor instance.
 
         Parameters:
-            db_manager (DatabaseManager):
-                An instance of DatabaseManager for database interaction.
-            data_reader (DataReader):
-                An instance of DataReader for reading data from file.
-            filepath (str):
-                The path to the data file.
+            words (List[str]): a list of valid Polish words.
         """
-        self.db = db_manager
-        self.data_reader = data_reader
-        self.filepath = filepath
-        self._data = None
-        self._words = None
-
-    @property
-    def data(self):
-        if self._data is None:
-            self._data = self.data_reader.read_data(self.filepath)
-        return self._data
-
-    @property
-    def words(self):
-        if self._words is None:
-            self._words = self.db.get_words()
-        return self._words
+        self.words = words
 
     @staticmethod
     def clean(word: str):
@@ -122,7 +98,7 @@ class DataProcessor:
         Returns:
             Tuple[Optional[str], Optional[str]]:
                 A tuple (word, None) if word is found in the database,
-                    or (None, word) if not found.
+                or (None, word) if not found.
         """
         cleaned = self.clean(word)
 
@@ -130,7 +106,16 @@ class DataProcessor:
             return cleaned, None  # valid word
         return None, cleaned  # invalid word
 
-    def process_dataset(self):
+    def process_answer(self, answer):
+
+        unique_words = list(OrderedDict.fromkeys(answer))
+        valid, invalid = zip(*(self.validate(word) for word in unique_words))
+        valid_list = [word for word in valid if word is not None]
+        invalid_list = [word for word in invalid if word is not None]
+
+        return valid_list, invalid_list
+
+    def process_dataset(self, data):
         """
         Process the dataset by cleaning, validating,
         and returning the processed data.
@@ -138,18 +123,13 @@ class DataProcessor:
         Returns:
             Tuple[List[List[str]], Dict[int, List[str]]]:
                 A tuple containing the processed dataset
-                    and a dictionary of invalid words by answer index.
+                and a dictionary of invalid words by answer index.
         """
 
         processed_dataset, invalid_words = [], {}
 
-        for i, answer in enumerate(self.data):
-            unique_words = list(OrderedDict.fromkeys(answer))
-            valid, invalid = map(list, zip(*[self.validate(word)
-                                             for word in unique_words]))
-
-            valid_list = [word for word in valid if word is not None]
-            invalid_list = [word for word in invalid if word is not None]
+        for i, answer in enumerate(data):
+            valid_list, invalid_list = self.process_answer(answer)
             processed_dataset.append(valid_list)
             invalid_words[i] = invalid_list
 

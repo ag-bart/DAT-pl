@@ -69,7 +69,7 @@ def create_vectors_database(database_path: str,
             conn = sqlite3.connect(database_path)
             cursor = conn.cursor()
             cursor.execute('''CREATE TABLE
-                              vectors (word TEXT PRIMARY KEY, vector BLOB)''')
+                              vectors (word VARCHAR(40) PRIMARY KEY, vector BLOB)''')
 
             validator = ModelProcessor(lang_dictionary=dict_path,
                                        model=model_path)
@@ -93,6 +93,6 @@ def create_vectors_database(database_path: str,
 
 if __name__ == "__main__":
     # Example usage:
-    create_vectors_database(database_path='datpl/database/vectors.db',
+    create_vectors_database(database_path='vectors.db',
                             dict_path='words.txt',
                             model_path='glove_100_3_polish.txt')
