@@ -2,8 +2,10 @@ import os
 import time
 from itertools import combinations
 from typing import List
-from .analysis import DatResult
 import pandas as pd
+
+from .analysis import DatResult
+
 
 
 def read_data(path_to_file):
