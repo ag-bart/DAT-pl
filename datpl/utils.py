@@ -1,6 +1,8 @@
 import os
 import time
 from itertools import combinations
+from typing import List
+from .analysis import DatResult
 import pandas as pd
 
 
@@ -26,8 +28,16 @@ def read_data(path_to_file):
     return data
 
 
-def save_results(results, words_number):
-    """Save computed distances to a CSV file in the 'results' folder."""
+def save_results(results: List[DatResult], minimum_words: int):
+    """Save computed distances to a CSV file in the 'results' folder.
+
+    Parameters:
+        results (List[DatResult]):
+            A list of DatResult named tuples, each containing distances
+            and scores for a set of words.
+        minimum_words (int):
+            The minimum number of words used to compute DAT scores.
+    """
 
     date = time.strftime('%Y-%b-%d__%H_%M_%S', time.localtime())
     file_name = f'dat_distances{date}.csv'
@@ -36,11 +46,11 @@ def save_results(results, words_number):
     if not os.path.exists(output_path):
         os.makedirs('results', exist_ok=True)
 
-    columns = ['W' + str(n) for n in range(1, words_number+1)]
+    columns = ['W' + str(n) for n in range(1, minimum_words+1)]
     column_names = [f'{c1}-{c2}' for c1, c2 in combinations(columns, 2)]
 
-    df = pd.DataFrame(results[0], columns=column_names)
-    df['DAT'] = results[1]
+    data = [result.distances + [result.score] for result in results]
+    df = pd.DataFrame(data, columns=column_names + ['DAT'])
 
     df.to_csv(output_path)
     print('csv file saved in /results.')

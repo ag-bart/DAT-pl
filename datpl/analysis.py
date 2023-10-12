@@ -1,10 +1,15 @@
 from itertools import combinations
-from typing import List
+from typing import List, Optional
+from collections import namedtuple
 from scipy.spatial.distance import cosine
+from .processing import DatabaseManager
+
+
+DatResult = namedtuple("DatResult", ["distances", "score"])
 
 
 class DatComputer:
-    def __init__(self, database_manager):
+    def __init__(self, database_manager: DatabaseManager):
         """
         Initialize the DatComputer instance.
 
@@ -17,18 +22,19 @@ class DatComputer:
         self._minimum_words = 7
 
     @property
-    def minimum_words(self):
+    def minimum_words(self) -> int:
+        """Return the minimum number of words for distance calculation."""
         return self._minimum_words
 
     @minimum_words.setter
-    def minimum_words(self, value):
+    def minimum_words(self, value: int):
         if not isinstance(value, int):
             raise ValueError('minimum value must be of type int')
         if value <= 0:
             raise ValueError('minimum value must be greater than 0')
         self._minimum_words = value
 
-    def distance(self, word1: str, word2: str):
+    def distance(self, word1: str, word2: str) -> float:
         """
         Compute the cosine distance between two words using their word vectors.
 
@@ -63,15 +69,25 @@ class DatComputer:
         return []  # Not enough valid words
 
     @staticmethod
-    def compute_dat_score(distances):
-        if len(distances) > 0:
-            return (sum(distances) / len(distances)) * 100
-        return None
+    def compute_dat_score(distances: List[float]) -> Optional[float]:
+        """Calculate the DAT score based on distances."""
+        return (sum(distances) / len(distances)) * 100 if len(distances) > 0 else None
 
-    def dataset_compute_dat_score(self, data):
-        """return mean distances multiplied by 100 for each participant"""
+    def dataset_compute_dat_score(self, data) -> List[DatResult]:
+        """Compute DAT scores for a dataset of participants' answers.
 
-        dat_distances = [self.dat(answer) for answer in data]
-        dat_scores = list(map(self.compute_dat_score, dat_distances))
+        Parameters:
+            data (List[List[str]]):
+                A list of answers, where each answer is a list of words.
 
-        return dat_distances, dat_scores
+        Returns:
+            List[DatResult]:
+            A list of DatResult named tuples, each containing distances
+            and scores for a set of words in an answer.
+        """
+
+        return [
+            DatResult(distances=self.dat(answer),
+                      score=self.compute_dat_score(self.dat(answer)))
+            for answer in data
+        ]
