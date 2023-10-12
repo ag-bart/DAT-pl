@@ -84,8 +84,7 @@ class DataProcessor:
     def clean(word: str):
         if not isinstance(word, str):
             raise ValueError("Input word must be a string.")
-        cleaned = re.sub(r'[^a-ząćęłńóśźżĄĆĘŁŃÓŚŹŻA-Z- ]+', '', word.lower())
-        cleaned = cleaned.strip()
+        cleaned = re.sub(r'[^a-ząćęłńóśźżĄĆĘŁŃÓŚŹŻA-Z- ]+', '', word.lower()).strip()
         return cleaned if len(cleaned) > 1 else ' '
 
     def validate(self, word: str) -> Tuple[Optional[str], Optional[str]]:
@@ -109,9 +108,10 @@ class DataProcessor:
     def process_answer(self, answer):
 
         unique_words = list(OrderedDict.fromkeys(answer))
-        valid, invalid = zip(*(self.validate(word) for word in unique_words))
-        valid_list = [word for word in valid if word is not None]
-        invalid_list = [word for word in invalid if word is not None]
+        result = [self.validate(word) for word in unique_words]
+
+        valid_list = [word for word, _ in result if word is not None]
+        invalid_list = [word for _, word in result if word is not None]
 
         return valid_list, invalid_list
 
@@ -131,8 +131,7 @@ class DataProcessor:
         for i, answer in enumerate(data):
             valid_list, invalid_list = self.process_answer(answer)
             processed_dataset.append(valid_list)
-            invalid_words[i] = invalid_list
-
-        invalid_words = {k: v for k, v in invalid_words.items() if v}
+            if invalid_list:
+                invalid_words[i] = invalid_list
 
         return processed_dataset, invalid_words
