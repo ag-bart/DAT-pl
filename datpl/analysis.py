@@ -41,7 +41,6 @@ class DatComputer:
         Returns:
             float: The cosine distance between the two words (between 0 and 2).
         """
-
         return cosine(self.db.get_word_vector(word1),
                       self.db.get_word_vector(word2))
 
@@ -59,19 +58,19 @@ class DatComputer:
             List[float]: A list of distances between valid word pairs.
                 Empty if the wordlist contained fewer valid words than minimum.
         """
-
         if len(words) >= self.minimum_words:
             subset = words[:self.minimum_words]
-            return [
-                self.distance(word1, word2)
-                for word1, word2 in combinations(subset, 2)
-            ]
+
+            return [self.distance(word1, word2)
+                    for word1, word2 in combinations(subset, 2)]
         return []  # Not enough valid words
 
     @staticmethod
     def compute_dat_score(distances: List[float]) -> Optional[float]:
         """Calculate the DAT score based on distances."""
-        return (sum(distances) / len(distances)) * 100 if len(distances) > 0 else None
+        if len(distances) > 0:
+            return (sum(distances) / len(distances)) * 100
+        return None
 
     def dataset_compute_dat_score(self, data) -> List[DatResult]:
         """Compute DAT scores for a dataset of participants' answers.
