@@ -1,5 +1,5 @@
 from itertools import combinations
-from typing import List, Optional
+from typing import List, Optional, Dict
 from collections import namedtuple
 from scipy.spatial.distance import cosine
 from .processing import DatabaseManager
@@ -30,8 +30,8 @@ class DatComputer:
     def minimum_words(self, value: int):
         if not isinstance(value, int):
             raise ValueError('minimum value must be of type int')
-        if value <= 0:
-            raise ValueError('minimum value must be greater than 0')
+        if value <= 1:
+            raise ValueError('minimum value must be greater than 1')
         self._minimum_words = value
 
     def distance(self, word1: str, word2: str) -> float:
@@ -41,7 +41,6 @@ class DatComputer:
         Returns:
             float: The cosine distance between the two words (between 0 and 2).
         """
-
         return cosine(self.db.get_word_vector(word1),
                       self.db.get_word_vector(word2))
 
@@ -59,35 +58,38 @@ class DatComputer:
             List[float]: A list of distances between valid word pairs.
                 Empty if the wordlist contained fewer valid words than minimum.
         """
-
         if len(words) >= self.minimum_words:
             subset = words[:self.minimum_words]
-            return [
-                self.distance(word1, word2)
-                for word1, word2 in combinations(subset, 2)
-            ]
+
+            return [self.distance(word1, word2)
+                    for word1, word2 in combinations(subset, 2)]
         return []  # Not enough valid words
 
     @staticmethod
     def compute_dat_score(distances: List[float]) -> Optional[float]:
         """Calculate the DAT score based on distances."""
-        return (sum(distances) / len(distances)) * 100 if len(distances) > 0 else None
+        if len(distances) > 0:
+            return (sum(distances) / len(distances)) * 100
+        return None
 
-    def dataset_compute_dat_score(self, data) -> List[DatResult]:
+    def dataset_compute_dat_score(self, data: Dict) -> Dict[str, DatResult]:
         """Compute DAT scores for a dataset of participants' answers.
 
         Parameters:
-            data (List[List[str]]):
+            data (Dict[str, List[str]]):
                 A list of answers, where each answer is a list of words.
 
         Returns:
-            List[DatResult]:
-            A list of DatResult named tuples, each containing distances
-            and scores for a set of words in an answer.
+            Dict[str, DatResult]:
+                A dictionary containing participant IDs as keys and DatResult
+                named tuples as values, each containing computed distances
+                and DAT score.
         """
 
-        return [
-            DatResult(distances=self.dat(answer),
-                      score=self.compute_dat_score(self.dat(answer)))
-            for answer in data
-        ]
+        scored_dataset = {}
+        for i, answer in data.items():
+            scored_dataset[i] = DatResult(
+                distances=self.dat(answer),
+                score=self.compute_dat_score(self.dat(answer))
+            )
+        return scored_dataset

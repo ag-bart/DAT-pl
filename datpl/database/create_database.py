@@ -91,6 +91,7 @@ def create_vectors_database(database_path: str,
     else:
         print(f'Database already exists at: {database_path}')
 
+
 if __name__ == "__main__":
     # Example usage:
     create_vectors_database(database_path='vectors.db',
