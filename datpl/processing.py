@@ -1,12 +1,16 @@
 import sqlite3
 import re
 from typing import Tuple, Optional
+from typing import Tuple, Optional, List, Dict
 from collections import OrderedDict
 import numpy as np
 
 
+ParsedWords = Dict[str, List[str]]
+
+
 class DatabaseManager:
-    def __init__(self, db_path):
+    def __init__(self, db_path: str):
         """
         Initialize the DatabaseManager instance.
 
@@ -28,7 +32,7 @@ class DatabaseManager:
             self.connection.close()
             self.connection = None
 
-    def get_words(self):
+    def get_words(self) -> List[str]:
         """
         Retrieve and return the list of words from the vector database.
 
@@ -56,7 +60,6 @@ class DatabaseManager:
             Optional[numpy.ndarray]:
                 The word vector as a NumPy array if found, else None.
         """
-
         if not self.connection:
             self.connect()
         cursor = self.connection.cursor()
@@ -71,7 +74,7 @@ class DatabaseManager:
 
 
 class DataProcessor:
-    def __init__(self, words):
+    def __init__(self, words: List[str]):
         """
         Initialize the DataProcessor instance.
 
@@ -81,7 +84,7 @@ class DataProcessor:
         self.words = words
 
     @staticmethod
-    def clean(word: str):
+    def clean(word: str) -> str:
         if not isinstance(word, str):
             raise ValueError("Input word must be a string.")
 
@@ -108,33 +111,52 @@ class DataProcessor:
             return cleaned, ''  # valid word
         return '', cleaned  # invalid word
 
-    def process_answer(self, answer):
-
-        unique_words = list(OrderedDict.fromkeys(answer))
-        result = [self.validate(word) for word in unique_words]
-
-        valid_list = [word for word, _ in result if word is not None]
-        invalid_list = [word for _, word in result if word is not None]
-
-        return valid_list, invalid_list
-
-    def process_dataset(self, data):
+    def process_words(self, words: List[str]) -> ParsedWords:
         """
-        Process the dataset by cleaning, validating,
-        and returning the processed data.
+        Process a list of given words into valid and invalid words.
+
+        Parameters:
+            words (List[str]): The list of words to process.
 
         Returns:
-            Tuple[List[List[str]], Dict[int, List[str]]]:
-                A tuple containing the processed dataset
-                and a dictionary of invalid words by answer index.
+            Dict[str, List[str]]:
+                A dictionary containing two keys:
+                - 'valid_words': List of valid words.
+                - 'invalid_words': List of invalid words.
         """
+        unique_words = list(OrderedDict.fromkeys(words))
+        result = [self.validate(word) for word in unique_words]
 
-        processed_dataset, invalid_words = [], {}
+        valid_list = [word for word, _ in result if word]
+        invalid_list = [word for _, word in result if word]
 
-        for i, answer in enumerate(data):
-            valid_list, invalid_list = self.process_answer(answer)
-            processed_dataset.append(valid_list)
-            if invalid_list:
-                invalid_words[i] = invalid_list
+        return {'valid_words': valid_list, 'invalid_words': invalid_list}
 
-        return processed_dataset, invalid_words
+    def process_dataset(self, data) -> Dict[str, ParsedWords]:
+        """
+        Clean and validate a dataset of DAT responses.
+
+        Parameters:
+            data (Dict[str, List[str]]):
+                dictionary of participants' word sequences,
+                where each participant is identified by a unique key.
+
+        Returns:
+            Dict[str, ParsedWords]
+                A dictionary containing participant IDs
+                and their response split into a dictionary of valid and
+                invalid words.
+        """
+        if isinstance(data, list):
+            data = {str(i): words for i, words in enumerate(data)}
+
+        processed_dataset = {}
+
+        for p_id, response in data.items():
+            result = self.process_words(response)
+            processed_dataset[p_id] = {
+                'valid_words': result['valid_words'],
+                'invalid_words': result['invalid_words']}
+
+        return processed_dataset
+
