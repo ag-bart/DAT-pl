@@ -1,6 +1,5 @@
 import sqlite3
 import re
-from typing import Tuple, Optional
 from typing import Tuple, Optional, List, Dict
 from collections import OrderedDict
 import numpy as np
@@ -159,4 +158,22 @@ class DataProcessor:
                 'invalid_words': result['invalid_words']}
 
         return processed_dataset
+
+    @staticmethod
+    def extract_valid_words(
+            dataset: Dict[str, ParsedWords]) -> Dict[str, List[str]]:
+        """
+        Extract valid words from the processed dataset.
+
+        Parameters:
+            dataset (Dict[str, ParsedWords]):
+                The processed dataset containing valid and invalid words.
+
+        Returns:
+            Dict[str, List[str]]:
+                A dictionary containing participant IDs and their valid words.
+        """
+        return {
+           p_id: response['valid_words'] for p_id, response in dataset.items()
+        }
 
