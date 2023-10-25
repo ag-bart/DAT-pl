@@ -30,8 +30,8 @@ class DatComputer:
     def minimum_words(self, value: int):
         if not isinstance(value, int):
             raise ValueError('minimum value must be of type int')
-        if value <= 0:
-            raise ValueError('minimum value must be greater than 0')
+        if value <= 1:
+            raise ValueError('minimum value must be greater than 1')
         self._minimum_words = value
 
     def distance(self, word1: str, word2: str) -> float:
