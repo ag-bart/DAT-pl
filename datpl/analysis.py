@@ -1,5 +1,5 @@
 from itertools import combinations
-from typing import List, Optional
+from typing import List, Optional, Dict
 from collections import namedtuple
 from scipy.spatial.distance import cosine
 from .processing import DatabaseManager
@@ -72,21 +72,24 @@ class DatComputer:
             return (sum(distances) / len(distances)) * 100
         return None
 
-    def dataset_compute_dat_score(self, data) -> List[DatResult]:
+    def dataset_compute_dat_score(self, data: Dict) -> Dict[str, DatResult]:
         """Compute DAT scores for a dataset of participants' answers.
 
         Parameters:
-            data (List[List[str]]):
+            data (Dict[str, List[str]]):
                 A list of answers, where each answer is a list of words.
 
         Returns:
-            List[DatResult]:
-            A list of DatResult named tuples, each containing distances
-            and scores for a set of words in an answer.
+            Dict[str, DatResult]:
+                A dictionary containing participant IDs as keys and DatResult
+                named tuples as values, each containing computed distances
+                and DAT score.
         """
 
-        return [
-            DatResult(distances=self.dat(answer),
-                      score=self.compute_dat_score(self.dat(answer)))
-            for answer in data
-        ]
+        scored_dataset = {}
+        for i, answer in data.items():
+            scored_dataset[i] = DatResult(
+                distances=self.dat(answer),
+                score=self.compute_dat_score(self.dat(answer))
+            )
+        return scored_dataset
