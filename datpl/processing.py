@@ -88,6 +88,7 @@ class DataProcessor:
         return cleaned if len(cleaned) > 1 else ' '
 
     def validate(self, word: str) -> Tuple[Optional[str], Optional[str]]:
+    def validate(self, word: str) -> Tuple[str, str]:
         """
         Validate the given word against the database.
 
@@ -95,15 +96,15 @@ class DataProcessor:
             word (str): The word to validate.
 
         Returns:
-            Tuple[Optional[str], Optional[str]]:
-                A tuple (word, None) if word is found in the database,
-                or (None, word) if not found.
+            Tuple[str, str]:
+                A tuple (word, '') if word is found in the database,
+                or ('', word) if not found.
         """
         cleaned = self.clean(word)
 
         if cleaned in self.words:
-            return cleaned, None  # valid word
-        return None, cleaned  # invalid word
+            return cleaned, ''  # valid word
+        return '', cleaned  # invalid word
 
     def process_answer(self, answer):
 
