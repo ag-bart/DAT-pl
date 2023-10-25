@@ -84,10 +84,12 @@ class DataProcessor:
     def clean(word: str):
         if not isinstance(word, str):
             raise ValueError("Input word must be a string.")
-        cleaned = re.sub(r'[^a-ząćęłńóśźżĄĆĘŁŃÓŚŹŻA-Z- ]+', '', word.lower()).strip()
-        return cleaned if len(cleaned) > 1 else ' '
 
-    def validate(self, word: str) -> Tuple[Optional[str], Optional[str]]:
+        cleaned = re.sub(
+            r'[^a-ząćęłńóśźżĄĆĘŁŃÓŚŹŻA-Z- ]+', '', word.lower()).strip()
+
+        return cleaned if len(cleaned) > 1 else ''
+
     def validate(self, word: str) -> Tuple[str, str]:
         """
         Validate the given word against the database.
