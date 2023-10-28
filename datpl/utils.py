@@ -42,6 +42,24 @@ def read_data(
     return dict(zip(df.index.tolist(), word_list))
 
 
+def save_results(results: Dict[str, DatResult], minimum_words: int):
+    """Save computed distances to a CSV file in the 'results' folder.
+
+    Parameters:
+    results (Dict[str, DatResult]): A dictionary of DatResult named tuples,
+        each containing distances and scores
+    minimum_words (int): The minimum number of words used to compute DAT scores.
+    """
+
+    output_path = _create_output_directory(_generate_file_name())
+
+    column_names = _generate_column_names(minimum_words)
+
+    _save_csv_file(output_path, results=results, columns=column_names)
+
+    print('csv file saved in /results.')
+
+
 def _read_data_from_file(file_path, file_extension, csv_separator):
     if file_extension == '.xlsx':
         return pd.read_excel(file_path, dtype=str)
@@ -93,21 +111,3 @@ def _save_csv_file(output_path: str, results, columns):
 
     df = pd.DataFrame(data, columns=columns)
     df.to_csv(output_path, index=False)
-
-
-def save_results(results: Dict[str, DatResult], minimum_words: int):
-    """Save computed distances to a CSV file in the 'results' folder.
-
-    Parameters:
-    results (Dict[str, DatResult]): A dictionary of DatResult named tuples,
-        each containing distances and scores
-    minimum_words (int): The minimum number of words used to compute DAT scores.
-    """
-
-    output_path = _create_output_directory(_generate_file_name())
-
-    column_names = _generate_column_names(minimum_words)
-
-    _save_csv_file(output_path, results=results, columns=column_names)
-
-    print('csv file saved in /results.')
