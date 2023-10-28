@@ -146,8 +146,6 @@ class DataProcessor:
                 and their response split into a dictionary of valid and
                 invalid words.
         """
-        if isinstance(data, list):
-            data = {str(i): words for i, words in enumerate(data)}
 
         processed_dataset = {}
 
