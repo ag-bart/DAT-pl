@@ -2,7 +2,6 @@ import sqlite3
 import re
 from typing import Tuple, Optional, List, Dict
 from collections import OrderedDict
-
 import numpy as np
 
 
@@ -175,3 +174,4 @@ class DataProcessor:
         return {
            p_id: response['valid_words'] for p_id, response in dataset.items()
         }
+
