@@ -165,5 +165,3 @@ def test_save_results(capsys, results_folder):
 
     expected_message = f'CSV file saved in {output_path}.\n'
     assert captured.out == expected_message
-
-
