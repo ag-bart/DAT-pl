@@ -1,14 +1,13 @@
 import pytest
+
 from datpl.analysis import DatComputer
 
 
-# Sample valid words
 valid_words = ["jabłko", "banan", "wiśnia", "gruszka"]
 
 
 class MockDatabaseManager:
     def get_word_vector(self, word):
-        # Mocked method for database interaction
         word_vectors = {
             "jabłko": [0.1, 0.2, 0.3, 0.4, 0.5],
             "banan": [0.2, 0.3, 0.4, 0.5, 0.6],
@@ -75,7 +74,4 @@ def test_dataset_compute_dat_score(dat_computer_instance):
     assert len(result["participant2"].distances) == 0  # Empty list
     assert result["participant2"].score is None  # Not enough words
 
-
-if __name__ == "__main__":
-    pytest.main()
 
