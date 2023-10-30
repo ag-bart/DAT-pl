@@ -4,6 +4,7 @@ import pathlib
 import uuid
 from itertools import combinations
 from typing import List, Dict
+
 import pandas as pd
 
 from .analysis import DatResult
@@ -57,16 +58,19 @@ def save_results(results: Dict[str, DatResult], minimum_words: int):
 
     _save_csv_file(output_path, results=results, columns=column_names)
 
-    print('csv file saved in /results.')
+    print(f'CSV file saved in {output_path}.')
+
+    return output_path
 
 
-def _read_data_from_file(file_path, file_extension, csv_separator):
+def _read_data_from_file(file_path, file_extension, csv_separator=';'):
     if file_extension == '.xlsx':
         return pd.read_excel(file_path, dtype=str)
-    elif file_extension == '.csv':
+
+    if file_extension == '.csv':
         return pd.read_csv(file_path, sep=csv_separator, dtype=str)
-    else:
-        raise ValueError(f'Unsupported file type: {file_extension}')
+
+    raise ValueError(f'Unsupported file type: {file_extension}')
 
 
 def _set_unique_id_column(df, id_column):
