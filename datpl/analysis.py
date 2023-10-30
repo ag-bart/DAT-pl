@@ -1,7 +1,9 @@
 from itertools import combinations
 from typing import List, Optional, Dict
 from collections import namedtuple
+
 from scipy.spatial.distance import cosine
+
 from .processing import DatabaseManager
 
 

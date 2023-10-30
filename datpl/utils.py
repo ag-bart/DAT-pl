@@ -4,6 +4,7 @@ import pathlib
 import uuid
 from itertools import combinations
 from typing import List, Dict
+
 import pandas as pd
 
 from .analysis import DatResult
