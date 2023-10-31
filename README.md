@@ -13,4 +13,3 @@ Dadas, S. (2019). Polish NLP resources (Version 1.0) [Computer software]. https:
 
 
 
-[Click here to download GloVe](https://github.com/sdadas/polish-nlp-resources/releases/download/v1.0/glove.zip) 

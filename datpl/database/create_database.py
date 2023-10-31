@@ -1,5 +1,6 @@
 import sqlite3
 import os
+import argparse
 from typing import Set, Dict
 import numpy as np
 
@@ -60,8 +61,8 @@ class ModelProcessor:
 
 
 def create_vectors_database(database_path: str,
-                            dict_path: str = 'words.txt',
-                            model_path: str = 'glove_100_3_polish.txt'):
+                            dict_path: str,
+                            model_path: str):
 
     if not os.path.exists(database_path):
 
@@ -84,7 +85,6 @@ def create_vectors_database(database_path: str,
 
             conn.commit()
             conn.close()
-            print('Database created successfully.')
 
         except Exception as exc:
             raise RuntimeError(f'Error creating the database: {exc}') from exc
@@ -93,7 +93,20 @@ def create_vectors_database(database_path: str,
 
 
 if __name__ == "__main__":
-    # Example usage:
-    create_vectors_database(database_path='vectors.db',
-                            dict_path='words.txt',
-                            model_path='glove_100_3_polish.txt')
+    parser = argparse.ArgumentParser(
+        description="Create a database of word vectors.")
+    parser.add_argument("--database-path",
+                        type=str, required=True,
+                        help=" Target path to the database file")
+    parser.add_argument("--dict-path",
+                        type=str, required=True,
+                        help="Path to the Polish dictionary file")
+    parser.add_argument("--model-path",
+                        type=str, required=True,
+                        help="Path to the GloVe model file")
+
+    args = parser.parse_args()
+    create_vectors_database(
+        database_path=args.database_path,
+        dict_path=args.dict_path,
+        model_path=args.model_path)
