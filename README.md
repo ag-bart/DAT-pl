@@ -59,6 +59,19 @@ In the `config.ini` file, you can specify the path to the data file for computat
     data_file_path = data/dat-data.xlsx
    ```
 
+## Running the Jupyter Notebook
+
+1. Launch Jupyter Notebook:
+   ```bash
+   cd datpl  # make sure you're in the project base directory
+   jupyter notebook
+   ```
+
+2. Open the `example_notebook.ipynb` file in the Jupyter interface.
+
+3. Run the notebook cells one by one or use the "Run All" option.
+
+
 ## Credits
 
 Global Vectors for Word Representation by:
