@@ -5,22 +5,27 @@ from collections import OrderedDict
 
 import numpy as np
 
-
 ParsedWords = Dict[str, List[str]]
+
 
 
 class DatabaseManager:
     def __init__(self, db_path: str):
         """
-        Initialize the DatabaseManager instance.
+        Initialize  DatabaseManager instance.
 
-        Parameters:
-            db_path (str): Path to the SQLite database file.
+        :param db_path: Path to the SQLite database file.
+        :type db_path: str
         """
         self.db_path = db_path
         self.connection = None
 
     def connect(self):
+        """
+        Establish a connection to the SQLite database.
+
+        :raises ConnectionError: If there is an error connecting to the database.
+        """
         try:
             self.connection = sqlite3.connect(self.db_path)
         except sqlite3.Error as exc:
@@ -28,6 +33,9 @@ class DatabaseManager:
                 f"Error connecting to the database: {str(exc)}") from exc
 
     def disconnect(self):
+        """
+        Close the connection to the database.
+        """
         if self.connection:
             self.connection.close()
             self.connection = None
@@ -36,8 +44,8 @@ class DatabaseManager:
         """
         Retrieve and return the list of words from the vector database.
 
-        Returns:
-            List[str]: A list of words stored in the database.
+        :return: A list of words stored in the database.
+        :rtype: List[str]
         """
         if not self.connection:
             self.connect()
@@ -51,14 +59,13 @@ class DatabaseManager:
 
     def get_word_vector(self, word: str) -> Optional[np.ndarray]:
         """
-        Retrieve the word vector from the database for the given word.
+        Retrieve word vector from the database for a given word.
 
-        Parameters:
-            word (str): The word to retrieve the vector for.
+        :param word: The word to retrieve the vector for.
+        :type word: str
 
-        Returns:
-            Optional[numpy.ndarray]:
-                The word vector as a NumPy array if found, else None.
+        :return: The word vector as a NumPy array if found, else None.
+        :rtype: Optional[numpy.ndarray]
         """
         if not self.connection:
             self.connect()
@@ -76,15 +83,24 @@ class DatabaseManager:
 class DataProcessor:
     def __init__(self, words: List[str]):
         """
-        Initialize the DataProcessor instance.
+        Initialize DataProcessor instance.
 
-        Parameters:
-            words (List[str]): a list of valid Polish words.
+        :param words: A list of valid Polish words.
+        :type words: List[str]
         """
         self.words = words
 
     @staticmethod
     def clean(word: str) -> str:
+        """
+        Clean a word by removing non-alphabetic characters and converting it to lowercase.
+
+        :param word: The word to clean.
+        :type word: str
+
+        :return: The cleaned word.
+        :rtype: str
+        """
         if not isinstance(word, str):
             raise ValueError("Input word must be a string.")
 
@@ -95,15 +111,13 @@ class DataProcessor:
 
     def validate(self, word: str) -> Tuple[str, str]:
         """
-        Validate the given word against the database.
+        Validate a word against the database.
 
-        Parameters:
-            word (str): The word to validate.
+        :param word: The word to validate.
+        :type word: str
 
-        Returns:
-            Tuple[str, str]:
-                A tuple (word, '') if word is found in the database,
-                or ('', word) if not found.
+        :return: A tuple (valid_word, '') if the word is found in the database, or ('', invalid_word) if not found.
+        :rtype: Tuple[str, str]
         """
         cleaned = self.clean(word)
 
@@ -113,16 +127,15 @@ class DataProcessor:
 
     def process_words(self, words: List[str]) -> ParsedWords:
         """
-        Process a list of given words into valid and invalid words.
+        Process a list of words into valid and invalid words.
 
-        Parameters:
-            words (List[str]): The list of words to process.
+        :param words: The list of words to process.
+        :type words: List[str]
 
-        Returns:
-            Dict[str, List[str]]:
-                A dictionary containing two keys:
-                - 'valid_words': List of valid words.
-                - 'invalid_words': List of invalid words.
+        :return: A dictionary containing two keys:
+            - 'valid_words': List of valid words.
+            - 'invalid_words': List of invalid words.
+        :rtype: Dict[str, List[str]]
         """
         unique_words = list(OrderedDict.fromkeys(words))
         result = [self.validate(word) for word in unique_words]
@@ -136,16 +149,11 @@ class DataProcessor:
         """
         Clean and validate a dataset of DAT responses.
 
-        Parameters:
-            data (Dict[str, List[str]]):
-                dictionary of participants' word sequences,
-                where each participant is identified by a unique key.
+        :param data: A dictionary of participants' word sequences, where each participant is identified by a unique key.
+        :type data: Dict[str, List[str]]
 
-        Returns:
-            Dict[str, ParsedWords]
-                A dictionary containing participant IDs
-                and their response split into a dictionary of valid and
-                invalid words.
+        :return: A dictionary containing participant IDs and their responses split into a dictionary of valid and invalid words.
+        :rtype: Dict
         """
 
         processed_dataset = {}
@@ -164,13 +172,11 @@ class DataProcessor:
         """
         Extract valid words from the processed dataset.
 
-        Parameters:
-            dataset (Dict[str, ParsedWords]):
-                The processed dataset containing valid and invalid words.
+        :param dataset: The processed dataset containing valid and invalid words.
+        :type dataset: Dict
 
-        Returns:
-            Dict[str, List[str]]:
-                A dictionary containing participant IDs and their valid words.
+        :return: A dictionary containing participant IDs and their valid words.
+        :rtype: Dict[str, List[str]]
         """
         return {
            p_id: response['valid_words'] for p_id, response in dataset.items()

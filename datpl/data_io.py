@@ -20,14 +20,15 @@ def read_data(
     """
     Read data from the specified file using Pandas.
 
-    Parameters:
-    path_to_file (str): The path to the file containing the data.
-    csv_separator (str, optional): The separator for CSV files. Defaults to ';'.
-    id_column (str or int, optional):
-        The name or index of the column containing unique IDs. Defaults to 0.
+    :param path_to_file: path to file containing the data.
+    :type path_to_file: str
+    :param csv_separator: separator for CSV files. Defaults to ';'.
+    :type csv_separator: str, optional
+    :param id_column: The name or index of the column containing unique IDs. Defaults to 0.
+    :type id_column: str or int, optional
 
-    Returns:
-    Dict[str, List[str]]: The data read from the file.
+    :return: The data read from the file.
+    :rtype: Dict[str, List[str]]
     """
 
     file_extension = pathlib.Path(path_to_file).suffix
@@ -44,14 +45,17 @@ def read_data(
 
 
 def save_results(results: Dict[str, DatResult], minimum_words: int):
-    """Save computed distances to a CSV file in the 'results' folder.
-
-    Parameters:
-    results (Dict[str, DatResult]): A dictionary of DatResult named tuples,
-        each containing distances and scores
-    minimum_words (int): The minimum number of words used to compute DAT scores.
     """
+    Save computed distances to a CSV file in the 'results' folder.
 
+    :param results: A dictionary of DatResult named tuples, each containing distances and scores.
+    :type results: Dict[str, DatResult]
+    :param minimum_words: The minimum number of words used to compute DAT scores.
+    :type minimum_words: int
+
+    :return: The path to the saved CSV file.
+    :rtype: str
+    """
     output_path = _create_output_directory(_generate_file_name())
 
     column_names = _generate_column_names(minimum_words)

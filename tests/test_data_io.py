@@ -6,7 +6,7 @@ import pytest
 import pandas as pd
 
 from datpl.analysis import DatResult
-from datpl.utils import (
+from datpl.data_io import (
     read_data,
     save_results,
     _save_csv_file,

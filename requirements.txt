@@ -3,5 +3,6 @@ openpyxl==3.1.2
 pandas==2.0.2
 scipy==1.10.1
 
+notebook
 
 pytest~=7.4.3
