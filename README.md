@@ -63,6 +63,7 @@ In the `config.ini` file, you can specify the path to the data file for computat
 
 1. Launch Jupyter Notebook:
    ```bash
+   cd datpl
    jupyter notebook
    ```
 
