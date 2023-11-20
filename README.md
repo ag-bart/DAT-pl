@@ -44,7 +44,7 @@ Read the authors' [manuscript](https://www.pnas.org/content/118/25/e2022340118) 
    This script performs the following tasks:
 
    - Downloads the GloVe model and unpacks it.
-   - Filters words and vectors from the GloVe model, retaining only those found in the included dictionary file 'words.txt'.
+   - Filters words and vectors from the GloVe model, retaining only those found in the included dictionary file `words.txt`.
    - Creates an SQLite database using the filtered words and vectors.
    - Performs tests to ensure the database is correctly configured.
    - Removes temporary files, leaving only the database if tests pass.
