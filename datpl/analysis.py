@@ -107,11 +107,11 @@ class DatComputer:
         :return: A dictionary containing participant IDs as keys and DatResult named tuples as values, each containing computed distances and DAT score.
         :rtype: Dict[str, DatResult]
         """
-
         scored_dataset = {}
+
         for i, answer in data.items():
-            scored_dataset[i] = DatResult(
-                distances=self.dat(answer),
-                score=self.compute_dat_score(self.dat(answer))
-            )
+            distances = self.dat(answer)
+            score = self.compute_dat_score(distances)
+            scored_dataset[i] = DatResult(distances=distances, score=score)
+
         return scored_dataset
