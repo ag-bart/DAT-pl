@@ -102,7 +102,7 @@ def test_set_unique_id_column_with_none_id_column():
 
 def test_generate_file_name():
     file_name = _generate_file_name()
-    assert file_name.startswith('dat_distances2023')
+    assert file_name.startswith('dat_distances20')
     assert file_name.endswith('.csv')
 
 
